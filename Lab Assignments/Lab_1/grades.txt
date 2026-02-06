@@ -1,5 +1,5 @@
 {
-  "John Smith": 78.3,
+  "John Smith": "12",
   "Jose Rodriguez": 91.2,
   "Susan Miller": 87.9,
   "Rahul Brahim": 86.2,
