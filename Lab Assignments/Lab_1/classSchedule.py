@@ -10,15 +10,22 @@ class Course:
         self.endTime = endTime
         self.avgGrade = avgGrade
 
+    def outputFormatted(self, i):
+        with open("output.txt", "a") as out:
+
+                out.write(f"COURSE {i + 1}: {self.dept}{self.cn}: {self.name}\n")
+                out.write(f"Number of Credits: {self.credits}\n")
+                out.write(f"Days of Lectures: {self.days}\n")
+                out.write(f"Lecture Time: {self.startTime} - {self.endTime}\n")
+                out.write(f"Stat: on average, students get {self.avgGrade}% in this course\n\n")
+
 courses = []
 
 with open('classesInput.txt', 'r') as f:
     lines = f.readlines()
     n = int(lines[0])
-
     for i in range(n):
         start = 1 + i * 8
-
         dept = lines[start].strip()
         cn = lines[start + 1].strip()
         name = lines[start + 2].strip()
@@ -27,18 +34,10 @@ with open('classesInput.txt', 'r') as f:
         startTime = lines[start + 5].strip()
         endTime = lines[start + 6].strip()
         avgGrade = lines[start + 7].strip()
-
         c = Course(dept, cn, name, credits, days, startTime, endTime, avgGrade)
         courses.append(c)
 
+open("output.txt", "w").close()
 
-with open("output.txt", "w") as out:
-    for i in range(len(courses)):
-
-        c = courses[i]
-
-        out.write(f"COURSE {i + 1}: {c.dept}{c.cn}: {c.name}\n")
-        out.write(f"Number of Credits: {c.credits}\n")
-        out.write(f"Days of Lectures: {c.days}\n")
-        out.write(f"Lecture Time: {c.startTime} - {c.endTime}\n")
-        out.write(f"Stat: on average, students get {c.avgGrade}% in this course\n\n")
+for i in range(len(courses)):
+    courses[i].outputFormatted(i)
