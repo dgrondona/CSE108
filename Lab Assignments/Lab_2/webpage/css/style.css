@@ -1,0 +1,195 @@
+/* For body of webpages */
+body {
+  background-color: #161616;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar container */
+.navbar {
+  background-color: #353535;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Regular nav links */
+.navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  display: block;
+}
+
+/* Dropdown container */
+.dropdown {
+  position: relative;
+}
+
+/* Dropdown button */
+.dropbtn {
+  background-color: #353535;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Dropdown menu */
+.dropdown-content {
+  display: none;          /* hidden by default */
+  position: absolute;     /* floats over nav content */
+  top: 100%;              /* right below the button instead of centered */
+  left: 0;
+  background-color: #474747;
+  min-width: 160px;
+  border-radius: 4px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+/* Dropdown links */
+.dropdown-content a {
+  color: white;
+  padding: 10px 12px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Show on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #414141;
+}
+
+
+/* For headings and paragraph */
+h1 {
+    color: #4fc3f7;
+    font-size: 4em;
+    text-align: center;
+}
+
+h2 {
+  color: #4fc3f7;
+  text-align: left;
+  font-size: 2em;
+  margin: 30px;
+}
+
+p {
+  margin: 30px;
+  white-space: normal;
+  max-width: 900px;
+}
+
+.center-paragraph {
+    text-align: center;
+}
+
+.center-paragraph p {
+    display: inline-block;
+}
+
+/* For the table */
+table {
+  border-collapse: collapse;
+  margin: 20px;
+}
+
+/* Table header and table data */
+th, td {
+  border: 2px solid white;
+  padding: 10px;
+}
+
+th, td a {
+    color: white;
+    text-decoration: none;
+}
+
+th, td a:hover {
+    color: rgb(254, 255, 201);
+    text-decoration: none;
+}
+
+.table-container {
+    text-align: center;
+}
+
+.table-container table {
+    display: inline-block;
+}
+
+/* For lists */
+ul {
+  margin: 20px;
+  padding-left: 40px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+/* For links in list */
+li a {
+    color: white;
+    text-decoration: none;
+}
+
+li a:hover {
+    color: rgb(254, 255, 201);
+    text-decoration: none;
+}
+
+/* For images */
+.image-container {
+  text-align: center;
+}
+
+.image-left {
+    text-align: left;
+    margin: 25px;
+}
+
+.image-container img {
+  width: 300px;
+}
+
+.image-left img {
+    width: 300px;
+}
+
+.product-img {
+  width: 100%;
+  max-width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+video {
+    max-width: 100%;
+    height: auto;
+}
+
+.video-container {
+    text-align: center;
+}
+
+.video-container video {
+    max-width: 100%;
+    height: auto;
+}
