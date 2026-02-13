@@ -2,7 +2,7 @@
 body {
   background-color: #161616;
   color: #ffffff;
-  font-family: Arial, sans-serif;
+  font-family: Roboto, sans-serif;
   font-size: 16px;
   text-align: left;
   margin: 0;
@@ -87,11 +87,11 @@ h2 {
   color: #4fc3f7;
   text-align: left;
   font-size: 2em;
-  margin: 30px;
+  margin-left: 30px;
 }
 
 p {
-  margin: 30px;
+  margin-left: 30px;
   white-space: normal;
   max-width: 900px;
 }
@@ -136,8 +136,8 @@ th, td a:hover {
 
 /* For lists */
 ul {
-  margin: 20px;
-  padding-left: 40px;
+  margin-left: 30px;
+  padding-left: 30px;
 }
 
 li {
