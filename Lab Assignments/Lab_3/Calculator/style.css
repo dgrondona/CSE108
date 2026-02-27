@@ -1,0 +1,60 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #0d0d0d;
+}
+
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 120px);
+    grid-auto-rows: 120px;
+    gap: 10px;
+    padding: 20px;
+    background: #0d0d0d;
+    border: 2px solid white;
+}
+
+#output {
+    grid-column: span 4;
+    background: black;
+    color: white;
+    text-align: right;
+    padding: 15px;
+    font-size: 4em;
+}
+
+/* Number buttons */
+.number {
+    font-size: 4em;
+    background: #272727;
+    color: white;
+}
+
+/* Operators */
+.operator {
+    font-size: 4em;
+    background: rgb(189, 123, 0);
+    color: white;
+}
+
+/* Equals */
+#equals {
+    font-size: 4em;
+    background: green;
+    color: white;
+}
+
+/* Clear */
+#clear {
+    font-size: 4em;
+    background: red;
+    color: white;
+}
+
+/* Highlight active operator */
+.active {
+    background: yellow !important;
+    color: black;
+}
