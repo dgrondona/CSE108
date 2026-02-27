@@ -14,6 +14,7 @@ const operators = document.querySelectorAll(".operator");
 const equals = document.getElementById("equals");
 const clear = document.getElementById("clear");
 const decimal = document.querySelector(".decimal");
+const plusMinus = document.querySelector(".plusMinus");
 
 /* Logic for inputting numbers */
 numbers.forEach(button => {
@@ -60,6 +61,21 @@ decimal.addEventListener("click", () => {
         output.textContent += ".";
 
     }
+});
+
+/* Logic for the +/- button */
+plusMinus.addEventListener("click", () => {
+
+    let current = parseFloat(output.textContent);
+
+    current = -current;
+
+    output.textContent = formatForDisplay(current);
+
+    if (shouldResetDisplay) {
+        internalValue = current;
+    }
+
 });
 
 /* Logic for operators buttons, like +, *, /, etc. */

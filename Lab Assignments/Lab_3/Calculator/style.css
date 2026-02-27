@@ -7,11 +7,32 @@ body {
     background: #0d0d0d;
 }
 
+.button {
+    width: 100px;
+    height: 100px;
+    border-radius: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4em;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px #999;
+
+    background: #272727;
+    color: white;
+}
+
+.button:active {
+    box-shadow: 0 2px #666;
+    transform: translateY(2px);
+}
+
 /* CSS for the calculator */
 .calculator {
     display: grid;
     grid-template-columns: repeat(4, 120px);
-    grid-auto-rows: 120px;
     gap: 10px;
     padding: 20px;
     background: #0d0d0d;
@@ -31,31 +52,21 @@ body {
     white-space: nowrap;
 }
 
-/* CSS for the number buttons */
-.number {
-    font-size: 4em;
-    background: #272727;
-    color: white;
-}
-
 /* CSS for the operator buttons */
 .operator {
-    font-size: 4em;
     background: rgb(189, 123, 0);
     color: white;
 }
 
 /* CSS for the = button */
 #equals {
-    font-size: 4em;
     background: green;
     color: white;
 }
 
 /* CSS for the clear button */
 #clear {
-    font-size: 4em;
-    background: red;
+    background: rgb(160, 0, 0);
     color: white;
 }
 
