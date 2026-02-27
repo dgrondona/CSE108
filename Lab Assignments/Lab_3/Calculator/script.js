@@ -1,5 +1,5 @@
 /* Set all of our variables */
-let firstNumber = null;
+let firstNumber = 0;
 let secondNumber = null;
 let currentOperator = null;
 let lastOperator = null;
