@@ -5,6 +5,8 @@ let currentOperator = null;
 let lastOperator = null;
 let lastSecondNumber = null;
 let shouldResetDisplay = false;
+let internalValue = null;
+let displayValue = null;
 
 /* Element references */
 const output = document.getElementById("output");
@@ -138,8 +140,13 @@ function calculate() {
             break;
     }
 
-    output.textContent = result;
-    firstNumber = result;
+    // Save full precision result
+    internalValue = result;
+
+    output.textContent = formatForDisplay(result);
+
+    firstNumber = internalValue;
+
     currentOperator = null;
     shouldResetDisplay = true;
 }
@@ -170,5 +177,13 @@ function setActiveOperator(button) {
 function removeActiveOperator() {
 
     operators.forEach(op => op.classList.remove("active"));
-    
+
+}
+
+/* Format display to round to 10 digits, we still keep the real number for further calculations */
+function formatForDisplay(number) {
+
+    // Limit to 10 sig digits for display
+    return Number(number).toPrecision(10).replace(/\.?0+$/, "");
+
 }
