@@ -13,8 +13,10 @@ const numbers = document.querySelectorAll(".number");
 const operators = document.querySelectorAll(".operator");
 const equals = document.getElementById("equals");
 const clear = document.getElementById("clear");
+const backspace = document.getElementById("backspace");
 const decimal = document.querySelector(".decimal");
 const plusMinus = document.querySelector(".plusMinus");
+const percentButton = document.getElementById("percent");
 
 /* Logic for inputting numbers */
 numbers.forEach(button => {
@@ -94,7 +96,7 @@ operators.forEach(button => {
         firstNumber = parseFloat(output.textContent);
 
         // Store the selected operator
-        currentOperator = button.textContent;
+        currentOperator = button.dataset.operator;
 
         shouldResetDisplay = true;
 
@@ -176,6 +178,46 @@ clear.addEventListener("click", () => {
     output.textContent = "0";
     shouldResetDisplay = false;
     removeActiveOperator();
+});
+
+/* Logic for the backspace button */
+backspace.addEventListener("click", () => {
+
+    // Remove last character
+    output.textContent = output.textContent.slice(0, -1);
+
+    // If empty after deletion, set to "0"
+    if (output.textContent === "" || output.textContent === "-") {
+
+        output.textContent = "0";
+
+    }
+});
+
+/* Logic for the % button */
+percentButton.addEventListener("click", () => {
+
+    // Parse the current display
+    let current = parseFloat(output.textContent);
+
+    // If we have a first number and an operator, calculate % of firstNumber
+    if (firstNumber !== null && currentOperator !== null) {
+
+        current = firstNumber * (current / 100);
+
+    } else {
+
+        // Otherwise, just divide by 100
+        current = current / 100;
+
+    }
+
+    // Update display with formatting
+    output.textContent = formatForDisplay(current);
+
+    // Update internal value for repeated calculations
+    internalValue = current;
+    shouldResetDisplay = true;
 });
 
 /* Set the active operator, for selecting which operation is being used */

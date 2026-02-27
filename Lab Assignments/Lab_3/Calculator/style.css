@@ -70,6 +70,12 @@ body {
     color: white;
 }
 
+/* CSS for the backspace button */
+#backspace {
+    background: rgb(160, 0, 0);
+    color: white;
+}
+
 /* Highlight active operator */
 .active {
     background: yellow !important;
