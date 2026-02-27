@@ -1,3 +1,4 @@
+/* CSS for the body */
 body {
     display: flex;
     justify-content: center;
@@ -6,6 +7,7 @@ body {
     background: #0d0d0d;
 }
 
+/* CSS for the calculator */
 .calculator {
     display: grid;
     grid-template-columns: repeat(4, 120px);
@@ -16,6 +18,7 @@ body {
     border: 2px solid white;
 }
 
+/* CSS for the output section */
 #output {
     grid-column: span 4;
     background: black;
@@ -23,30 +26,33 @@ body {
     text-align: right;
     padding: 15px;
     font-size: 4em;
+
+    overflow: hidden;
+    white-space: nowrap;
 }
 
-/* Number buttons */
+/* CSS for the number buttons */
 .number {
     font-size: 4em;
     background: #272727;
     color: white;
 }
 
-/* Operators */
+/* CSS for the operator buttons */
 .operator {
     font-size: 4em;
     background: rgb(189, 123, 0);
     color: white;
 }
 
-/* Equals */
+/* CSS for the = button */
 #equals {
     font-size: 4em;
     background: green;
     color: white;
 }
 
-/* Clear */
+/* CSS for the clear button */
 #clear {
     font-size: 4em;
     background: red;
