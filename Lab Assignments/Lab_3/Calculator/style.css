@@ -10,7 +10,7 @@ body {
 .button {
     width: 100px;
     height: 100px;
-    border-radius: 20%;
+    border-radius: 30%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,14 +18,14 @@ body {
     margin: 5px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px #999;
+    box-shadow: 0 4px #525252;
 
     background: #272727;
     color: white;
 }
 
 .button:active {
-    box-shadow: 0 2px #666;
+    box-shadow: 0 2px #464646;
     transform: translateY(2px);
 }
 
@@ -74,6 +74,9 @@ body {
 #backspace {
     background: rgb(160, 0, 0);
     color: white;
+    font-weight: bold;
+    font-size: 3.5em;
+    line-height: 1;
 }
 
 /* Highlight active operator */
