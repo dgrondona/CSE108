@@ -56,18 +56,22 @@ body {
 .operator {
     background: rgb(189, 123, 0);
     color: white;
+    font-weight: bold;
 }
 
 /* CSS for the = button */
 #equals {
     background: green;
     color: white;
+    font-weight: bold;
 }
 
 /* CSS for the clear button */
 #clear {
     background: rgb(160, 0, 0);
     color: white;
+    font-weight: bold;
+    font-size: 3.5em;
 }
 
 /* CSS for the backspace button */
@@ -77,6 +81,22 @@ body {
     font-weight: bold;
     font-size: 3.5em;
     line-height: 1;
+}
+
+/* CSS for the % */
+#percent {
+    font-weight: bold;
+}
+
+/* CSS for the . */
+.decimal {
+    font-weight: bold;
+}
+
+/* CSS for the +/- */
+.plusMinus {
+    font-size: 3.5em;
+    font-weight: bold;
 }
 
 /* Highlight active operator */

@@ -5,7 +5,7 @@ let currentOperator = null;
 let lastOperator = null;
 let lastSecondNumber = null;
 let shouldResetDisplay = false;
-let internalValue = null;
+let internalValue = 0;
 
 /* Element references */
 const output = document.getElementById("output");
