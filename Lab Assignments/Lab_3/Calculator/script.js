@@ -6,7 +6,6 @@ let lastOperator = null;
 let lastSecondNumber = null;
 let shouldResetDisplay = false;
 let internalValue = null;
-let displayValue = null;
 
 /* Element references */
 const output = document.getElementById("output");
@@ -96,7 +95,7 @@ equals.addEventListener("click", () => {
         // If there is not operator selected & we used = previously, we repeat the last operation
         if (lastOperator !== null) {
 
-            firstNumber = parseFloat(output.textContent);
+            firstNumber = internalValue;
             secondNumber = lastSecondNumber;
             currentOperator = lastOperator;
 
@@ -122,30 +121,28 @@ equals.addEventListener("click", () => {
 
 /* Do the calculation */
 function calculate() {
-    let result;
 
     // Perform operation based on the selected operator
     switch (currentOperator) {
         case "+":
-            result = firstNumber + secondNumber;
+            internalValue = firstNumber + secondNumber;
             break;
         case "-":
-            result = firstNumber - secondNumber;
+            internalValue = firstNumber - secondNumber;
             break;
         case "*":
-            result = firstNumber * secondNumber;
+            internalValue = firstNumber * secondNumber;
             break;
         case "/":
-            result = firstNumber / secondNumber;
+            internalValue = firstNumber / secondNumber;
             break;
     }
 
-    // Save full precision result
-    internalValue = result;
-
-    output.textContent = formatForDisplay(result);
-
+    // Use full precision for future calculations
     firstNumber = internalValue;
+
+    // Format display
+    output.textContent = formatForDisplay(internalValue);
 
     currentOperator = null;
     shouldResetDisplay = true;
@@ -183,7 +180,34 @@ function removeActiveOperator() {
 /* Format display to round to 10 digits, we still keep the real number for further calculations */
 function formatForDisplay(number) {
 
-    // Limit to 10 sig digits for display
-    return Number(number).toPrecision(10).replace(/\.?0+$/, "");
+    // Seperate the negative sign
+    const sign = number < 0 ? "-" : "";
+    let absNum = number < 0 ? -number : number;
 
+    // Scientific notation if too big or too small
+    if (absNum >= 1e10 || (absNum > 0 && absNum < 1e-6)) {
+
+        return sign + absNum.toExponential(6);
+
+    }
+
+    // Convert number to string
+    let str = absNum.toString();
+
+    // If it’s too long, truncate decimals
+    if (str.includes(".")) {
+
+        // Split into the int part in the decimal part to make sure we only take up 10 digits worth of space
+        const [intPart, decPart] = str.split(".");
+        const maxDecimal = 10 - intPart.length;
+        str = intPart + "." + (decPart ? decPart.slice(0, maxDecimal) : "");
+
+    } else if (str.length > 10) {
+
+        // If integer part itself exceeds 10, use scientific notation
+        return sign + absNum.toExponential(6);
+
+    }
+
+    return sign + str;
 }
