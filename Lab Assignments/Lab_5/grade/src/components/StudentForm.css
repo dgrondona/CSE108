@@ -1,0 +1,25 @@
+.student-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px;
+}
+
+.student-form input {
+  padding: 5px;
+  font-size: 14px;
+}
+
+.student-form button {
+  padding: 5px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.student-form button:hover {
+  background-color: #0056b3;
+}

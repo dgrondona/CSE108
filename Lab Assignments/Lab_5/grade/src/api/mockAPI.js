@@ -1,6 +1,15 @@
 let mockStudents = [
   { name: "Alice", grade: 90 },
   { name: "Bob", grade: 85 },
+  { name: "Ron", grade: 85 },
+  { name: "Ethan", grade: 85 },
+  { name: "Carl", grade: 85 },
+  { name: "Crisp", grade: 85 },
+  { name: "MMM", grade: 85 },
+  { name: "Elbow", grade: 85 },
+  { name: "Cornelious", grade: 85 },
+  { name: "e", grade: 85 },
+  { name: "fork", grade: 85 },
 ];
 
 export const fetchAllStudents = async () => {

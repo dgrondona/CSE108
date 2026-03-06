@@ -5,16 +5,15 @@ import {
   addStudent,
   updateStudentGrade,
   removeStudent,
-} from "./api/gradesAPI";
-import StudentTable from "./components/StudentTable";
+} from "./api/mockAPI";
+import PaginatedTable from "./components/PaginatedTable";
 import StudentForm from "./components/StudentForm";
 import StudentSearch from "./components/StudentSearch";
 import "./App.css";
 
 function App() {
-
   const [students, setStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [searchText, setSearchText] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -26,76 +25,63 @@ function App() {
     setStudents(all);
   };
 
-  const handleSearch = async (name) => {
-    const student = await fetchStudent(name);
-    if (student) {
-      setSelectedStudent(student);
-      setMessage("");
-    } else {
-      setSelectedStudent(null);
-      setMessage(`Student "${name}" not found.`);
-    }
-  };
+  // Filter students based on search (first letter of first or last name)
+  const filteredStudents = students.filter((s) => {
+    const search = searchText.toLowerCase();
+    return (
+      s.name.toLowerCase().startsWith(search) || // name starts with search
+      String(s.grade).startsWith(search)         // grade starts with search
+    );
+  });
 
   const handleAdd = async (name, grade) => {
-    const newStudent = await addStudent(name, grade);
-    if (newStudent) {
-      setMessage(`Added ${name} successfully.`);
-      loadStudents();
-    } else {
-      setMessage(`Failed to add ${name}.`);
+    const exists = students.some((s) => s.name.toLowerCase() === name.toLowerCase());
+    if (exists) {
+      setMessage(`Student "${name}" already exists!`);
+      return;
     }
+    await addStudent(name, grade);
+    setMessage(`Added ${name}`);
+    loadStudents();
   };
 
   const handleUpdate = async (name, grade) => {
-    const updated = await updateStudentGrade(name, grade);
-    if (updated) {
-      setMessage(`Updated ${name}'s grade to ${grade}.`);
-      loadStudents();
-    } else {
-      setMessage(`Failed to update ${name}.`);
-    }
+    await updateStudentGrade(name, grade);
+    setMessage(`Updated ${name} to grade ${grade}`);
+    loadStudents();
   };
 
   const handleDelete = async (name) => {
-    const deleted = await removeStudent(name);
-    if (deleted) {
-      setMessage(`Deleted ${name}.`);
-      loadStudents();
-    } else {
-      setMessage(`Failed to delete ${name}.`);
-    }
+    await removeStudent(name);
+    setMessage(`Deleted ${name}`);
+    loadStudents();
   };
 
   return (
     <div className="app">
-      <h1>Grades App</h1>
+      <div className="logo-container">
+        <h1>Grades App</h1>
+      </div>
 
-      {/* Search a single student */}
-      <StudentSearch onSearch={handleSearch} />
+      <div className="search-container">
+        <StudentSearch
+          searchText={searchText}
+          onSearchTextChange={setSearchText}
+        />
+      </div>
 
-      {/* Show single student info */}
-      {selectedStudent && (
-        <div className="selected-student">
-          {selectedStudent.name}: {selectedStudent.grade}
-        </div>
-      )}
-
-      {/* Display messages */}
       {message && <div className="message">{message}</div>}
 
-      {/* Form to add/edit a student */}
-      <StudentForm
-        onAdd={handleAdd}
-        onUpdate={handleUpdate}
-      />
+      <div className="main-content">
+        <PaginatedTable
+          students={filteredStudents}
+          studentsPerPage={10}
+          onEdit={handleUpdate}
+          onDelete={handleDelete}
+        />
 
-      {/* Table of all students */}
-      <StudentTable
-        students={students}
-        onEdit={handleUpdate}
-        onDelete={handleDelete}
-      />
+        <StudentForm onAdd={handleAdd} />
+      </div>
     </div>
   );
 }
