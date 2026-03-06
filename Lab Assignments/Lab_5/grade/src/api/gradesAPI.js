@@ -1,5 +1,13 @@
 const BASE_URL = "https://amhep.pythonanywhere.com/grades";
 
+// Check if a student exists
+export const studentExists = async (name) => {
+
+  const student = await fetchStudent(name);
+  return student !== null;
+
+};
+
 // Function to get all grades and students
 export const fetchAllStudents = async () => {
 
