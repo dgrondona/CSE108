@@ -6,29 +6,106 @@ import "./App.css";
 
 function App() {
 
-  const [input, setInput] = useState("");
+  const [display, setDisplay] = useState("0");
+  const [firstNum, setFirstNum] = useState(null);
+  const [operator, setOperator] = useState(null);
+  const [waitingForSecond, setWaitingForSecond] = useState(false);
+  const [lastSecond, setLastSecond] = useState(null);
+  const [activeOperator, setActiveOperator] = useState(null);
 
-  const handleClick = (value) => {
-
-    if (value === "=") {
-      try {
-        setInput(eval(input));
-      } catch {
-        setInput("Error");
-      }
+  const calculate = (a, b, op) => {
+    switch (op) {
+      case "+": return a + b;
+      case "-": return a - b;
+      case "*": return a * b;
+      case "/": return a / b;
+      default: return b;
     }
+  };
 
-    else if (value === "AC") {
-      setInput("");
+  const handleNumber = (num) => {
+
+    if (waitingForSecond) {
+      setDisplay(num);
+      setWaitingForSecond(false);
+      setActiveOperator(null);
     }
-
-    else if (value === "⌫") {
-      setInput(input.slice(0, -1));
-    }
-
     else {
-      setInput(input + value);
+      setDisplay(display === "0" ? num : display + num);
     }
+
+  };
+
+  const handleDecimal = () => {
+
+    if (waitingForSecond) {
+      setDisplay("0.");
+      setWaitingForSecond(false);
+      setActiveOperator(null);
+      return;
+    }
+
+    if (!display.includes(".")) {
+      setDisplay(display + ".");
+    }
+
+  };
+
+  const handleOperator = (op) => {
+
+    const current = parseFloat(display);
+
+    if (firstNum === null) {
+      setFirstNum(current);
+    }
+    else if (!waitingForSecond) {
+      const result = calculate(firstNum, current, operator);
+      setDisplay(String(result));
+      setFirstNum(result);
+    }
+
+    setWaitingForSecond(true);
+    setOperator(op);
+    setActiveOperator(op);
+
+  };
+
+  const handleEquals = () => {
+
+    if (operator === null) return;
+
+    const current = parseFloat(display);
+
+    let second = waitingForSecond ? lastSecond : current;
+
+    const result = calculate(firstNum, second, operator);
+
+    setDisplay(String(result));
+    setFirstNum(result);
+    setLastSecond(second);
+    setWaitingForSecond(true);
+    setActiveOperator(null);
+
+  };
+
+  const handleClear = () => {
+    setDisplay("0");
+    setFirstNum(null);
+    setOperator(null);
+    setLastSecond(null);
+    setWaitingForSecond(false);
+    setActiveOperator(null);
+  };
+
+  const handleBackspace = () => {
+
+    if (display.length === 1) {
+      setDisplay("0");
+    }
+    else {
+      setDisplay(display.slice(0, -1));
+    }
+
   };
 
   const buttons = [
@@ -55,34 +132,72 @@ function App() {
     { value: "+/-", type: "top" },
     { value: "0", type: "number" },
     { value: ".", type: "number" },
-    { value: "=", type: "operator" }
+    { value: "=", type: "equals" }
   ];
 
+  const handleClick = (value) => {
+
+    if (!isNaN(value)) handleNumber(value);
+
+    else if (value === ".") handleDecimal();
+
+    else if (value === "+" || value === "-" || value === "*" || value === "/")
+      handleOperator(value);
+
+    else if (value === "=") handleEquals();
+
+    else if (value === "AC") handleClear();
+
+    else if (value === "⌫") handleBackspace();
+
+    else if (value === "+/-")
+      setDisplay(String(parseFloat(display) * -1));
+
+    else if (value === "%")
+      setDisplay(String(parseFloat(display) / 100));
+
+  };
+
   return (
-    <div className="calculator">
 
-      <TextField
-        value={input}
-        fullWidth
-        variant="outlined"
-        className="display"
-      />
+    <div className="app">
 
-      <Grid container spacing={1}>
+      <div className="calculator">
 
-        {buttons.map((btn, index) => (
-          <Grid item xs={3} key={index}>
-            <CalcButton
-              value={btn.value}
-              type={btn.type}
-              onClick={handleClick}
-            />
-          </Grid>
-        ))}
+        <TextField
+          value={display}
+          fullWidth
+          variant="outlined"
+          className="display"
+        />
 
-      </Grid>
+        <Grid container spacing={1}>
+
+          {buttons.map((btn, index) => (
+
+            <Grid
+              item
+              xs={btn.value === "0" ? 6 : 3}
+              key={index}
+            >
+
+              <CalcButton
+                value={btn.value}
+                type={btn.type}
+                onClick={handleClick}
+                active={activeOperator === btn.value}
+              />
+
+            </Grid>
+
+          ))}
+
+        </Grid>
+
+      </div>
 
     </div>
+
   );
 }
 

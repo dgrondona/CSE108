@@ -1,12 +1,15 @@
 import Button from "@mui/material/Button";
 
-function CalcButton({ value, onClick, type }) {
+function CalcButton({ value, type, onClick, active }) {
 
   let className = "btn";
 
+  if (type === "number") className += " number";
   if (type === "operator") className += " operator";
   if (type === "top") className += " top";
-  if (type === "number") className += " number";
+  if (type === "equals") className += " equals";
+
+  if (active) className += " active";
 
   return (
     <Button
