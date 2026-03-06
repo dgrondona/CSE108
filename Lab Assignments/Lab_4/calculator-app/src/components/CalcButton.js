@@ -1,11 +1,18 @@
 import Button from "@mui/material/Button";
 
-function CalcButton({ value, onClick }) {
+function CalcButton({ value, onClick, type }) {
+
+  let className = "btn";
+
+  if (type === "operator") className += " operator";
+  if (type === "top") className += " top";
+  if (type === "number") className += " number";
+
   return (
     <Button
+      className={className}
       variant="contained"
       onClick={() => onClick(value)}
-      style={{ margin: "5px", width: "60px", height: "60px" }}
     >
       {value}
     </Button>

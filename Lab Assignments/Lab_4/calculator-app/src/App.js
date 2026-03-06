@@ -1,54 +1,87 @@
 import { useState } from "react";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import CalcButton from "./components/CalcButton";
 import "./App.css";
 
 function App() {
+
   const [input, setInput] = useState("");
 
   const handleClick = (value) => {
+
     if (value === "=") {
       try {
         setInput(eval(input));
       } catch {
         setInput("Error");
       }
-    } else if (value === "C") {
+    }
+
+    else if (value === "AC") {
       setInput("");
-    } else {
+    }
+
+    else if (value === "⌫") {
+      setInput(input.slice(0, -1));
+    }
+
+    else {
       setInput(input + value);
     }
   };
 
   const buttons = [
-    "7","8","9","/",
-    "4","5","6","*",
-    "1","2","3","-",
-    "0",".","=","+",
-    "C"
+    { value: "⌫", type: "top" },
+    { value: "AC", type: "top" },
+    { value: "%", type: "top" },
+    { value: "/", type: "operator" },
+
+    { value: "7", type: "number" },
+    { value: "8", type: "number" },
+    { value: "9", type: "number" },
+    { value: "*", type: "operator" },
+
+    { value: "4", type: "number" },
+    { value: "5", type: "number" },
+    { value: "6", type: "number" },
+    { value: "-", type: "operator" },
+
+    { value: "1", type: "number" },
+    { value: "2", type: "number" },
+    { value: "3", type: "number" },
+    { value: "+", type: "operator" },
+
+    { value: "+/-", type: "top" },
+    { value: "0", type: "number" },
+    { value: ".", type: "number" },
+    { value: "=", type: "operator" }
   ];
 
   return (
     <div className="calculator">
-      <h2>React Calculator</h2>
 
       <TextField
         value={input}
-        variant="outlined"
         fullWidth
-        margin="normal"
+        variant="outlined"
+        className="display"
       />
 
-      <Grid container justifyContent="center">
-        {buttons.map((btn) => (
-          <CalcButton
-            key={btn}
-            value={btn}
-            onClick={handleClick}
-          />
+      <Grid container spacing={1}>
+
+        {buttons.map((btn, index) => (
+          <Grid item xs={3} key={index}>
+            <CalcButton
+              value={btn.value}
+              type={btn.type}
+              onClick={handleClick}
+            />
+          </Grid>
         ))}
+
       </Grid>
+
     </div>
   );
 }
