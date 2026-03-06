@@ -12,12 +12,11 @@ import StudentSearch from "./components/StudentSearch";
 import "./App.css";
 
 function App() {
-  // --- State ---
+
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [message, setMessage] = useState("");
 
-  // --- Load all students on component mount ---
   useEffect(() => {
     loadStudents();
   }, []);
@@ -27,7 +26,6 @@ function App() {
     setStudents(all);
   };
 
-  // --- Handlers ---
   const handleSearch = async (name) => {
     const student = await fetchStudent(name);
     if (student) {

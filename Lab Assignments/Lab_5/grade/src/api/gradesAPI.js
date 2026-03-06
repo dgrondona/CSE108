@@ -32,7 +32,7 @@ export const fetchStudent = async (name) => {
 
     try {
 
-        const res = await fetch(`${BASE_URL}/${encodedURIComponent(name)}`);
+        const res = await fetch(`${BASE_URL}/${encodeURIComponent(name)}`);
         if (!res.ok) throw new Error(`Failed to fetch grade for ${name}`);
         const data = await res.json();
         return data;
