@@ -1,7 +1,7 @@
 const BASE_URL = "https://amhep.pythonanywhere.com/grades";
 
 // Function to get all grades and students
-export const getAllGrades = async () => {
+export const fetchAllStudents = async () => {
 
     try {
 
@@ -20,7 +20,7 @@ export const getAllGrades = async () => {
 };
 
 // Get a single students grade by name
-export const getStudent = async (name) => {
+export const fetchStudent = async (name) => {
 
     try {
 
@@ -39,7 +39,7 @@ export const getStudent = async (name) => {
 };
 
 // Create a student with a grade
-export const createStudent = async (name, grade) => {
+export const addStudent = async (name, grade) => {
 
   try {
 
@@ -65,7 +65,7 @@ export const createStudent = async (name, grade) => {
 };
 
 // Update a students grade
-export const updateGrade = async (name, grade) => {
+export const updateStudentGrade = async (name, grade) => {
 
   try {
 
@@ -91,7 +91,7 @@ export const updateGrade = async (name, grade) => {
 };
 
 // Delete a student
-export const deleteStudent = async (name) => {
+export const removeStudent = async (name) => {
 
   try {
 
@@ -109,7 +109,7 @@ export const deleteStudent = async (name) => {
 
     console.error("deleteStudent error:", error);
     return null;
-    
+
   }
 
 };
