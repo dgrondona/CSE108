@@ -7,6 +7,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  width: 100%;
 }
 
 .app {
@@ -16,7 +17,8 @@ body {
 }
 
 .calculator {
-  width: 320px;
+  display: inline-block;
+  width: 280px;
   padding: 20px;
   background: black;
   border: 4px solid #171717;
@@ -37,7 +39,7 @@ body {
   width: 100%;
   height: 65px;
   font-size: 20px;
-  border-radius: 50%;
+  border-radius: 35% !important;
 }
 
 .number {
@@ -49,7 +51,7 @@ body {
 }
 
 .equals {
-  background-color: #ff9500 !important;
+  background-color: green !important;
 }
 
 .top {
@@ -60,4 +62,8 @@ body {
 .operator.active {
   background-color: white !important;
   color: #ff9500 !important;
+}
+
+.clear {
+  background-color: rgb(176, 0, 0) !important;
 }

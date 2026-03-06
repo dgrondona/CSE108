@@ -109,8 +109,8 @@ function App() {
   };
 
   const buttons = [
-    { value: "⌫", type: "top" },
-    { value: "AC", type: "top" },
+    { value: "⌫", type: "clear" },
+    { value: "AC", type: "clear" },
     { value: "%", type: "top" },
     { value: "/", type: "operator" },
 
@@ -166,7 +166,6 @@ function App() {
 
         <TextField
           value={display}
-          fullWidth
           variant="outlined"
           className="display"
         />

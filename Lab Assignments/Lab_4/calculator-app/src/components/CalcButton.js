@@ -8,6 +8,7 @@ function CalcButton({ value, type, onClick, active }) {
   if (type === "operator") className += " operator";
   if (type === "top") className += " top";
   if (type === "equals") className += " equals";
+  if (type === "clear") className += " clear";
 
   if (active) className += " active";
 
