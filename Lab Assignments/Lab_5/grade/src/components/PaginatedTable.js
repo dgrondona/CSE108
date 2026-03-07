@@ -92,7 +92,11 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
                 )}
               </td>
               <td>
-                <button className="delete-btn" onClick={() => onDelete(s.name)}>
+                <button className="delete-btn" onClick={() => {
+                    if (window.confirm(`Are you sure you want to delete ${s.name}?`)) {
+                        {onDelete(s.name)}
+                    }
+                }}>
                   Delete
                 </button>
               </td>
