@@ -16,6 +16,7 @@ function App() {
   const [searchText, setSearchText] = useState("");
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+  const [highlightedStudent, setHighlightedStudent] = useState(null);
 
   useEffect(() => {
     loadStudents();
@@ -35,17 +36,6 @@ function App() {
     );
   });
 
-  const handleAdd = async (name, grade) => {
-    const exists = students.some((s) => s.name.toLowerCase() === name.toLowerCase());
-    if (exists) {
-      showTempMessage(`Student "${name}" already exists!`);
-      return;
-    }
-    await addStudent(name, grade);
-    showTempMessage(`Added ${name}`);
-    loadStudents();
-  };
-
   const handleUpdate = async (name, grade) => {
     await updateStudentGrade(name, grade);
     showTempMessage(`Updated ${name} to grade ${grade}`);
@@ -60,7 +50,12 @@ function App() {
       await addStudent(name, grade);
       showTempMessage(`Added ${name} with ${grade}`);
     }
+
+    setHighlightedStudent(name); // highlight this student
     loadStudents();
+
+    // remove highlight after 2 seconds
+    setTimeout(() => setHighlightedStudent(null), 2000);
   };
 
   const handleDelete = async (name) => {
@@ -101,6 +96,7 @@ function App() {
           studentsPerPage={50}
           onEdit={handleUpdate}
           onDelete={handleDelete}
+          highlightedStudent={highlightedStudent}
         />
 
         <StudentForm students={students} onSave={handleSave} />

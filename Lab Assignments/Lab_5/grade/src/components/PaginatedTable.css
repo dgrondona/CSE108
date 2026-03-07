@@ -76,3 +76,12 @@ input.grade-edit[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
 }
+
+.highlight-row {
+  animation: highlightFade 2s forwards;
+}
+
+@keyframes highlightFade {
+  0% { background-color: var(--color-primary); }
+  100% { background-color: inherti; }
+}

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import PageControls from "./PageControls";
 import "./PaginatedTable.css";
 
-export default function PaginatedTable({ students, studentsPerPage = 50, onEdit, onDelete }) {
+export default function PaginatedTable({ students, studentsPerPage = 50, onEdit, onDelete, highlightedStudent }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingName, setEditingName] = useState(null);
   const [editGrade, setEditGrade] = useState("");
@@ -63,7 +63,10 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
         </thead>
         <tbody>
           {currentStudents.map((s) => (
-            <tr key={s.name}>
+            <tr
+                key={s.name}
+                className={highlightedStudent === s.name ? "highlight-row" : ""}
+            >
               <td className="name-cell">{s.name}</td>
               <td>
                 {editingName === s.name ? (
