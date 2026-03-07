@@ -73,6 +73,7 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
                   <input
                     ref={inputRef}
                     type="number"
+                    step="0.01"
                     className="grade-edit"
                     value={editGrade}
                     onChange={handleGradeChange}
