@@ -59,7 +59,7 @@ function App() {
 
   return (
     <div className="app">
-      <div className="logo-container">
+      <div className="logo">
         <h1>Grades App</h1>
       </div>
 
@@ -70,7 +70,9 @@ function App() {
         />
       </div>
 
-      {message && <div className="message">{message}</div>}
+      <div className={message.includes("not found") ? "message error" : "message success"}>
+        {message}
+      </div>
 
       <div className="main-content">
         <PaginatedTable

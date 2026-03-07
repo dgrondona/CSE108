@@ -4,22 +4,6 @@
   margin-right: 20px; /* spacing if form is next to table */
 }
 
-.student-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.student-table th,
-.student-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.student-table th {
-  background-color: #f2f2f2;
-}
-
 .name-cell {
   max-width: 200px;
   white-space: nowrap;
@@ -28,18 +12,5 @@
 }
 
 .grade-cell {
-  cursor: pointer;
-}
-
-.delete-btn {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.delete-btn:hover {
-  background-color: #ff1a1a;
+    cursor: pointer;
 }

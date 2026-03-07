@@ -1,13 +1,23 @@
-.app {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+.app, body {
+  text-align: center; /* center everything horizontally */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+button {
+  background-color: var(--color-primary);  /* yellow accent */
+  color: var(--color-text);             /* dark text for contrast */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .logo {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+  font-size: 38px;
+  margin-bottom: 5px;
 }
 
 .top-search {
@@ -32,7 +42,8 @@
 .student-table {
   border-collapse: collapse;
   width: 650px;
-  background: white;
+  background: var(--color-table-bg);
+  color: var(--color-text);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 0 8px rgba(0,0,0,0.1);
@@ -41,22 +52,22 @@
 .student-table th,
 .student-table td {
   padding: 10px 15px;
-  border: 1px solid #ddd;
+  border: 2px solid var(--color-table-border);
   text-align: left;
 }
 
 .student-table th {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-table-header-bg);
+  color: var(--color-text);
 }
 
 .student-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: var(--color-table-row-hover);
 }
 
 .delete-btn {
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--color-delete);
+  color: var(--color-text);
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
@@ -64,5 +75,19 @@
 }
 
 .delete-btn:hover {
-  background-color: #c82333;
+  filter: brightness(1.2);
+  transform: scale(1.03);
+}
+
+.message {
+  margin: 10px 0;
+}
+
+.error {
+  color: var(--color-error);
+  font-weight: bold;
+}
+
+.success {
+  color: var(--color-info);
 }

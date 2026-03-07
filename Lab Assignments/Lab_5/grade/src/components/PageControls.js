@@ -1,16 +1,27 @@
 import React from "react";
+import "./PageControls.css";
 
 export default function PageControls({ currentPage, totalPages, onPageChange }) {
   return (
-    <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
-      <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>
-        Prev
+    <div className="page-controls">
+      <button
+        className="page-btn"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        ←
       </button>
-      <span>
+
+      <span className="page-number">
         Page {currentPage} of {totalPages}
       </span>
-      <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-        Next
+
+      <button
+        className="page-btn"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        →
       </button>
     </div>
   );

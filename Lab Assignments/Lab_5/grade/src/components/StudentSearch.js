@@ -6,7 +6,7 @@ export default function StudentSearch({ searchText, onSearchTextChange }) {
     <input
       type="text"
       className="search-bar"
-      placeholder="Search by Name or Grade..."
+      placeholder="Search by name or grade..."
       value={searchText}
       onChange={(e) => onSearchTextChange(e.target.value)}
     />

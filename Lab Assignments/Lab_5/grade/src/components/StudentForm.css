@@ -8,18 +8,22 @@
 .student-form input {
   padding: 5px;
   font-size: 14px;
+  background-color: var(--color-input-bg);
+  color: var(--color-muted);
+  border-color: var(--color-input-border-2);
 }
 
 .student-form button {
   padding: 5px;
   font-size: 14px;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
   border: none;
   cursor: pointer;
   border-radius: 3px;
 }
 
-.student-form button:hover {
-  background-color: #0056b3;
+.student-form button:hover:not(:disabled) {
+  filter: brightness(1.2);
+  transform: scale(1.03);
 }
