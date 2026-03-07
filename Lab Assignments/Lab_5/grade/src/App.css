@@ -65,6 +65,11 @@ button {
   background-color: var(--color-table-row-hover);
 }
 
+.student-table thead th {
+  position: stick;
+  top: 0;
+}
+
 .delete-btn {
   background-color: var(--color-delete);
   color: var(--color-text);

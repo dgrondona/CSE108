@@ -77,7 +77,7 @@ function App() {
       <div className="main-content">
         <PaginatedTable
           students={filteredStudents}
-          studentsPerPage={10}
+          studentsPerPage={50}
           onEdit={handleUpdate}
           onDelete={handleDelete}
         />

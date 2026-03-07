@@ -12,5 +12,33 @@
 }
 
 .grade-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
+}
+
+.grade-A {
+    color: #6ba43a;
+    font-weight: bold;
+}
+
+.grade-B {
+    color: #9bd9e8;
+    font-weight: bold;
+}
+
+.grade-C {
+    color: #ffbf3c;
+    font-weight: bold;
+}
+
+.grade-D {
+    color: #f18a00;
+    font-weight: bold;
+}
+
+.grade-F {
+    color: #ff5a5a;
+    font-weight: bold;
 }

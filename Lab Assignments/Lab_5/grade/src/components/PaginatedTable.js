@@ -34,6 +34,14 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
     }
   };
 
+  const getLetterGrade = (grade) => {
+    if (grade >= 90) return "A";
+    if (grade >= 80) return "B";
+    if (grade >= 70) return "C";
+    if (grade >= 60) return "D";
+    return "F";
+  }
+
   return (
     <div className="table-container">
       <table className="student-table">
@@ -63,7 +71,10 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
                     className="grade-cell"
                     onClick={() => handleGradeClick(s.name, s.grade)}
                   >
-                    {s.grade}
+                    <span className={`grade-letter grade-${getLetterGrade(s.grade)}`}>
+                        {getLetterGrade(s.grade)}
+                    </span>
+                    <span className="grade-percent">{s.grade}%</span>
                   </span>
                 )}
               </td>
