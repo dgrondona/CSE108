@@ -5,7 +5,7 @@ import {
   addStudent,
   updateStudentGrade,
   removeStudent,
-} from "./api/mockAPI";
+} from "./api/gradesAPI";
 import PaginatedTable from "./components/PaginatedTable";
 import StudentForm from "./components/StudentForm";
 import StudentSearch from "./components/StudentSearch";
@@ -23,9 +23,15 @@ function App() {
   }, []);
 
   const loadStudents = async () => {
-    const all = await fetchAllStudents();
+  try {
+    const all = await fetchAllStudents(); // already returns [{name, grade}, ...]
     setStudents(all);
-  };
+  } catch (error) {
+    console.error("Failed to load students:", error);
+    setStudents([]);
+    showTempMessage(error.message || "Failed to load students");
+  }
+};
 
   // Filter students based on search (first letter of first or last name)
   const filteredStudents = students.filter((s) => {
@@ -43,6 +49,7 @@ function App() {
   };
 
   const handleSave = async (name, grade, isUpdate) => {
+  try {
     if (isUpdate) {
       await updateStudentGrade(name, grade);
       showTempMessage(`Updated ${name} to ${grade}`);
@@ -50,13 +57,11 @@ function App() {
       await addStudent(name, grade);
       showTempMessage(`Added ${name} with ${grade}`);
     }
-
-    setHighlightedStudent(name); // highlight this student
     loadStudents();
-
-    // remove highlight after 2 seconds
-    setTimeout(() => setHighlightedStudent(null), 2000);
-  };
+  } catch (error) {
+    showTempMessage(error.message || "Something went wrong");
+  }
+};
 
   const handleDelete = async (name) => {
     await removeStudent(name);
