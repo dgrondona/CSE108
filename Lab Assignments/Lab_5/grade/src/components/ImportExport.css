@@ -1,0 +1,45 @@
+.import-export-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.export-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.export-dropdown button {
+    width: 100%;
+    cursor: pointer;
+    background-color: var(--color-primary);
+}
+
+.import-button button {
+    background-color: var(--color-primary);
+}
+
+.export-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  min-width: 80px;
+  z-index: 10;
+}
+
+.export-options span {
+  display: block;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.export-options span:hover {
+  background-color: #444;
+}
+
+.export-dropdown:hover .export-options {
+  display: block;
+}

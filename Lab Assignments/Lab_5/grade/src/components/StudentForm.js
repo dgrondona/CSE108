@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./StudentForm.css";
+import ImportExport from "./ImportExport";
 
-export default function StudentForm({ students, onSave }) {
+export default function StudentForm({ onAdd, students }) {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
 
@@ -10,18 +11,15 @@ export default function StudentForm({ students, onSave }) {
     const parsedGrade = parseFloat(grade);
     if (!name || isNaN(parsedGrade)) return;
 
-    const existing = students.find((s) => s.name.toLowerCase() === name.toLowerCase());
-
-    if (existing) {
-      // update existing student
-      onSave(name, parsedGrade, true);
-    } else {
-      // add new student
-      onSave(name, parsedGrade, false);
-    }
-
+    onAdd(name.trim(), parsedGrade);
     setName("");
     setGrade("");
+  };
+
+  const handleImport = (importedStudents) => {
+    importedStudents.forEach((s) => {
+      onAdd(s.name, s.grade);
+    });
   };
 
   return (
@@ -38,7 +36,10 @@ export default function StudentForm({ students, onSave }) {
         value={grade}
         onChange={(e) => setGrade(e.target.value)}
       />
-      <button type="submit">Save</button>
+      <button type="submit">Add Student</button>
+
+      {/* Import / Export Buttons below the submit button */}
+      <ImportExport students={students} onImport={handleImport} />
     </form>
   );
 }
