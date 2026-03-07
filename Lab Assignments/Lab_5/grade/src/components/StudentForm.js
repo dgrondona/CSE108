@@ -2,24 +2,38 @@ import React, { useState } from "react";
 import "./StudentForm.css";
 import ImportExport from "./ImportExport";
 
-export default function StudentForm({ onAdd, students }) {
+export default function StudentForm({ onSave, students }) {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const trimmedName = name.trim();
     const parsedGrade = parseFloat(grade);
-    if (!name || isNaN(parsedGrade)) return;
+    if (!trimmedName || isNaN(parsedGrade)) return;
 
-    onAdd(name.trim(), parsedGrade);
+    // Check if student already exists
+    const existingStudent = students.find(
+      (s) => s.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+
+    // If exists, pass a flag so onAdd knows this is an update
+    onSave(trimmedName, parsedGrade, !!existingStudent);
+
     setName("");
     setGrade("");
   };
 
-  const handleImport = (importedStudents) => {
-    importedStudents.forEach((s) => {
-      onAdd(s.name, s.grade);
-    });
+  // Import students safely (can add throttling here if needed)
+  const handleImport = async (importedStudents) => {
+    for (const s of importedStudents) {
+      const existing = students.find(
+        (st) => st.name.toLowerCase() === s.name.toLowerCase()
+      );
+      await onSave(s.name, s.grade, !!existing);
+      // Optional: add a small delay if hitting API rate limits
+      // await new Promise((r) => setTimeout(r, 500));
+    }
   };
 
   return (
@@ -36,7 +50,7 @@ export default function StudentForm({ onAdd, students }) {
         value={grade}
         onChange={(e) => setGrade(e.target.value)}
       />
-      <button type="submit">Add Student</button>
+      <button type="submit">Save Student</button>
 
       {/* Import / Export Buttons below the submit button */}
       <ImportExport students={students} onImport={handleImport} />
