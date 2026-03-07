@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./StudentForm.css";
 
-export default function StudentForm({ onAdd }) {
+export default function StudentForm({ students, onSave }) {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
 
@@ -9,7 +9,17 @@ export default function StudentForm({ onAdd }) {
     e.preventDefault();
     const parsedGrade = parseFloat(grade);
     if (!name || isNaN(parsedGrade)) return;
-    onAdd(name.trim(), parsedGrade);
+
+    const existing = students.find((s) => s.name.toLowerCase() === name.toLowerCase());
+
+    if (existing) {
+      // update existing student
+      onSave(name, parsedGrade, true);
+    } else {
+      // add new student
+      onSave(name, parsedGrade, false);
+    }
+
     setName("");
     setGrade("");
   };
@@ -28,7 +38,7 @@ export default function StudentForm({ onAdd }) {
         value={grade}
         onChange={(e) => setGrade(e.target.value)}
       />
-      <button type="submit">Add Student</button>
+      <button type="submit">Save</button>
     </form>
   );
 }

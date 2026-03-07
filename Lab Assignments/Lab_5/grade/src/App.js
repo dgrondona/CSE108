@@ -52,6 +52,17 @@ function App() {
     loadStudents();
   };
 
+  const handleSave = async (name, grade, isUpdate) => {
+    if (isUpdate) {
+      await updateStudentGrade(name, grade);
+      showTempMessage(`Updated ${name} to ${grade}`);
+    } else {
+      await addStudent(name, grade);
+      showTempMessage(`Added ${name} with ${grade}`);
+    }
+    loadStudents();
+  };
+
   const handleDelete = async (name) => {
     await removeStudent(name);
     showTempMessage(`Deleted ${name}`);
@@ -92,7 +103,7 @@ function App() {
           onDelete={handleDelete}
         />
 
-        <StudentForm onAdd={handleAdd} />
+        <StudentForm students={students} onSave={handleSave} />
       </div>
     </div>
   );
