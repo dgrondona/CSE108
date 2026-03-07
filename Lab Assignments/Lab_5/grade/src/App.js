@@ -15,6 +15,7 @@ function App() {
   const [students, setStudents] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [message, setMessage] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     loadStudents();
@@ -37,24 +38,33 @@ function App() {
   const handleAdd = async (name, grade) => {
     const exists = students.some((s) => s.name.toLowerCase() === name.toLowerCase());
     if (exists) {
-      setMessage(`Student "${name}" already exists!`);
+      showTempMessage(`Student "${name}" already exists!`);
       return;
     }
     await addStudent(name, grade);
-    setMessage(`Added ${name}`);
+    showTempMessage(`Added ${name}`);
     loadStudents();
   };
 
   const handleUpdate = async (name, grade) => {
     await updateStudentGrade(name, grade);
-    setMessage(`Updated ${name} to grade ${grade}`);
+    showTempMessage(`Updated ${name} to grade ${grade}`);
     loadStudents();
   };
 
   const handleDelete = async (name) => {
     await removeStudent(name);
-    setMessage(`Deleted ${name}`);
+    showTempMessage(`Deleted ${name}`);
     loadStudents();
+  };
+
+  const showTempMessage = (text, duration = 3000) => {
+    setMessage(text);
+    setShowMessage(true);
+
+    setTimeout(() => {
+      setShowMessage(false);
+    }, duration);
   };
 
   return (
@@ -70,8 +80,8 @@ function App() {
         />
       </div>
 
-      <div className={message.includes("not found") ? "message error" : "message success"}>
-        {message}
+      <div className="message-container">
+        {message && <span className={`message ${showMessage ? "visible" : ""}`}>{message}</span>}
       </div>
 
       <div className="main-content">

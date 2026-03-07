@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PageControls from "./PageControls";
 import "./PaginatedTable.css";
 
@@ -16,6 +16,15 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
     else if (page > totalPages) page = totalPages;
     setCurrentPage(page);
   };
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (editingName !== null && inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.select(); // optional: highlights the number so typing replaces it
+    }
+    }, [editingName]);
 
   const handleGradeClick = (name, grade) => {
     setEditingName(name);
@@ -59,12 +68,13 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
               <td>
                 {editingName === s.name ? (
                   <input
+                    ref={inputRef}
                     type="number"
+                    className="grade-edit"
                     value={editGrade}
                     onChange={handleGradeChange}
                     onKeyDown={(e) => handleGradeSubmit(e, s.name)}
                     onBlur={() => setEditingName(null)}
-                    style={{ width: "70px" }}
                   />
                 ) : (
                   <span

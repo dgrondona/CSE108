@@ -11,6 +11,9 @@
   background-color: var(--color-input-bg);
   color: var(--color-muted);
   border-color: var(--color-input-border-2);
+
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 .student-form button {
@@ -26,4 +29,11 @@
 .student-form button:hover:not(:disabled) {
   filter: brightness(1.2);
   transform: scale(1.03);
+}
+
+/* Remove number arrows (Chrome, Safari, Edge) */
+input.grade-edit::-webkit-outer-spin-button,
+input.grade-edit::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
