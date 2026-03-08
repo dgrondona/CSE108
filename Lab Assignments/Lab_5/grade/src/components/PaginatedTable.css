@@ -2,6 +2,7 @@
   max-width: 650px;
   overflow-x: auto;
   margin-right: 20px; /* spacing if form is next to table */
+  height: auto;
 }
 
 .name-cell {
