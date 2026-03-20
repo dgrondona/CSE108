@@ -1,44 +1,45 @@
 from flask import Flask, request, jsonify, send_from_directory
-import json
-import os
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, static_folder="build", static_url_path="")
 
-# In-memory database
-DATA_FILE = "grades.json"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///grades.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-def loadGrades():
-    if not os.path.exists(DATA_FILE):
-        return {}
-    with open(DATA_FILE, "r") as f:
-        try:
-            return json.load(f)
-        except:
-            return {}
-        
-def saveGrades(grades):
-    with open(DATA_FILE, "w") as f:
-        json.dump(grades, f, indent=2)
+db = SQLAlchemy(app)
+
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    grade = db.Column(db.Float, nullable=False)
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "grade": self.grade
+        }
+
+# Create DB
+with app.app_context():
+    db.create_all()
 
 # Get all students
 @app.route("/grades", methods=["GET"])
 def get_all():
-    return jsonify(loadGrades())
+    students = Student.query.all()
+    return jsonify({s.name: s.grade for s in students})
 
 # Get one student
 @app.route("/grades/<name>", methods=["GET"])
 def get_one(name):
-    grades = loadGrades()
+    student = Student.query.filter_by(name=name).first()
 
-    if name not in grades:
+    if not student:
         return "Student not found", 404
 
-    return jsonify({
-        "name": name,
-        "grade": grades[name]
-    })
+    return jsonify(student.to_dict())
 
-# Add student
+# Add student (or update if exists)
 @app.route("/grades", methods=["POST"])
 def add_student():
     data = request.get_json()
@@ -51,18 +52,24 @@ def add_student():
     if grade > 100:
         return "Value cannot be greater than 100", 400
 
-    grades = loadGrades()
-    grades[name] = grade
-    saveGrades(grades)
+    student = Student.query.filter_by(name=name).first()
 
-    return jsonify({"message": "Added"}), 201
+    if student:
+        student.grade = grade
+    else:
+        student = Student(name=name, grade=grade)
+        db.session.add(student)
+
+    db.session.commit()
+
+    return jsonify({"message": "Saved"}), 201
 
 # Update student
 @app.route("/grades/<name>", methods=["PUT"])
 def update_student(name):
-    grades = loadGrades()
+    student = Student.query.filter_by(name=name).first()
 
-    if name not in grades:
+    if not student:
         return "Student not found", 404
 
     data = request.get_json()
@@ -71,21 +78,21 @@ def update_student(name):
     if grade > 100:
         return "Value cannot be greater than 100", 400
 
-    grades[name] = grade
-    saveGrades(grades)
+    student.grade = grade
+    db.session.commit()
 
     return jsonify({"message": "Updated"})
 
 # Delete student
 @app.route("/grades/<name>", methods=["DELETE"])
 def delete_student(name):
-    grades = loadGrades()
+    student = Student.query.filter_by(name=name).first()
 
-    if name not in grades:
+    if not student:
         return "Student not found", 404
 
-    del grades[name]
-    saveGrades(grades)
+    db.session.delete(student)
+    db.session.commit()
 
     return jsonify({"message": "Deleted"})
 

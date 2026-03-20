@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/home/draven/CSE108/Lab Assignments/Lab_6/venv/bin/python3" "$0" "$@"
+'''exec' "/home/draven/CSE108/Lab Assignments/Lab_7/venv/bin/python3" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
