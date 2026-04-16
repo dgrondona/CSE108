@@ -1,0 +1,88 @@
+.table-container {
+  max-width: 650px;
+  overflow-x: auto;
+  margin-right: 20px; /* spacing if form is next to table */
+  height: auto;
+}
+
+.name-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grade-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.grade-A {
+    color: #6ba43a;
+    font-weight: bold;
+}
+
+.grade-B {
+    color: #9bd9e8;
+    font-weight: bold;
+}
+
+.grade-C {
+    color: #ffbf3c;
+    font-weight: bold;
+}
+
+.grade-D {
+    color: #f18a00;
+    font-weight: bold;
+}
+
+.grade-F {
+    color: #ff5a5a;
+    font-weight: bold;
+}
+
+/* Remove number input arrows (Chrome, Edge, Safari) */
+.grade-edit::-webkit-outer-spin-button,
+.grade-edit::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.grade-edit {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  width: 80px;
+  box-sizing: border-box;
+  padding: 4px;
+}
+
+.grade-edit:focus {
+    outline: 2px solid var(--color-primary);
+}
+
+/* Remove number arrows (Chrome, Safari, Edge) */
+input.grade-edit::-webkit-outer-spin-button,
+input.grade-edit::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove number arrows (Firefox) */
+input.grade-edit[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.highlight-row {
+  animation: highlightFade 2s forwards;
+}
+
+@keyframes highlightFade {
+  0% { background-color: var(--color-primary); }
+  100% { background-color: inherti; }
+}

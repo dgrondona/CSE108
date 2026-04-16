@@ -1,3 +1,26 @@
+:root {
+  --color-bg: #1e1e1e;
+  --color-text: #e3f3f6;
+  --color-muted: #99d9d9;
+
+  --color-primary: #DAA900;
+  --color-secondary: #0091b3;
+
+  --color-delete: #cc0000;
+
+  --color-table-bg: #2a2a2a;
+  --color-table-header-bg: #0091b3;
+  --color-table-row-hover: #3d3d3d;
+  --color-table-border: #58c3d5;
+
+  --color-input-bg: #3d3d3d;
+  --color-input-border: #58c3d5;
+  --color-input-border-2: rgb(53, 53, 53);
+
+  --color-message: #ffd748;
+  --color-error: #b80000;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

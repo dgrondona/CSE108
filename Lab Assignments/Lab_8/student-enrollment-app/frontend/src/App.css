@@ -1,38 +1,119 @@
-.App {
+.app, body {
+  text-align: center; /* center everything horizontally */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+button {
+  background-color: var(--color-primary);  /* yellow accent */
+  color: var(--color-text);             /* dark text for contrast */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.logo {
+  font-size: 38px;
+  margin-bottom: 5px;
+}
+
+.top-search {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.main-content {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Form can be narrower than table */
+.main-content form {
+  width: 250px;
+}
+
+/* Table styling (same as before) */
+.student-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  background: var(--color-table-bg);
+  color: var(--color-text);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.student-table th,
+.student-table td {
+  padding: 10px 15px;
+  border: 2px solid var(--color-table-border);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-table th {
+  background-color: var(--color-table-header-bg);
+  color: var(--color-text);
+}
+
+.student-table tr:nth-child(even) {
+  background-color: var(--color-table-row-hover);
+}
+
+.student-table thead th {
+  position: stick;
+  top: 0;
+}
+
+.delete-btn {
+  background-color: var(--color-delete);
+  color: var(--color-text);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  filter: brightness(1.2);
+  transform: scale(1.03);
+}
+
+.message-container {
+  height: 24px;
+  margin-bottom: 12px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.message {
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.message.error {
+  color: var(--color-delete);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.message.info {
+  color: var(--color-primary);
 }
 
-.App-link {
-  color: #61dafb;
+.message.visible {
+  opacity: 1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(218, 169, 0, 0.5);
 }

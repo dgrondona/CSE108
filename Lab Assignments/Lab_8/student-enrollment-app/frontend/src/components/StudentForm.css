@@ -1,0 +1,39 @@
+.student-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px;
+}
+
+.student-form input {
+  padding: 5px;
+  font-size: 14px;
+  background-color: var(--color-input-bg);
+  color: var(--color-muted);
+  border-color: var(--color-input-border-2);
+
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.student-form button {
+  padding: 5px;
+  font-size: 14px;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.student-form button:hover:not(:disabled) {
+  filter: brightness(1.2);
+  transform: scale(1.03);
+}
+
+/* Remove number arrows (Chrome, Safari, Edge) */
+input.grade-edit::-webkit-outer-spin-button,
+input.grade-edit::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
