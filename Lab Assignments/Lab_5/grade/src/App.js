@@ -34,7 +34,8 @@ function App() {
 };
 
   // Filter students based on search (first letter of first or last name)
-  const filteredStudents = students.filter((s) => {
+  const filteredStudents = 
+  students.filter((s) => {
     const search = searchText.toLowerCase();
     return (
       s.name.toLowerCase().startsWith(search) || // name starts with search

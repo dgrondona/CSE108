@@ -1,4 +1,4 @@
-const BASE_URL = "https://amhep.pythonanywhere.com/grades";
+const BASE_URL = "/grades";
 
 // Check if a student exists
 export const studentExists = async (name) => {
@@ -21,7 +21,7 @@ export const fetchAllStudents = async () => {
 
   } catch (error) {
     console.error("fetchAllStudents error:", error);
-    return { error: error.message };
+    return [];
   }
 };
 
