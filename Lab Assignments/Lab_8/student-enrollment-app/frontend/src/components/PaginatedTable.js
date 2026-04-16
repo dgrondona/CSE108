@@ -2,14 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import PageControls from "./PageControls";
 import "./PaginatedTable.css";
 
-export default function PaginatedTable({ students, studentsPerPage = 50, onEdit, onDelete, highlightedStudent }) {
+export default function PaginatedTable({
+  data,
+  columns,
+  studentsPerPage = 50,
+  actions = null
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingName, setEditingName] = useState(null);
   const [editGrade, setEditGrade] = useState("");
 
-  const totalPages = Math.ceil(students.length / studentsPerPage);
+  const totalPages = Math.ceil(data.length / studentsPerPage);
   const startIndex = (currentPage - 1) * studentsPerPage;
-  const currentStudents = students.slice(startIndex, startIndex + studentsPerPage);
+  const currentData = data.slice(startIndex, startIndex + studentsPerPage);
 
   const handlePageChange = (page) => {
     if (page < 1) page = 1;
@@ -43,64 +48,31 @@ export default function PaginatedTable({ students, studentsPerPage = 50, onEdit,
     }
   };
 
-  const getLetterGrade = (grade) => {
-    if (grade >= 90) return "A";
-    if (grade >= 80) return "B";
-    if (grade >= 70) return "C";
-    if (grade >= 60) return "D";
-    return "F";
-  }
-
   return (
     <div className="table-container">
       <table className="student-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Grade</th>
-            <th>Actions</th>
+            {columns.map((col) => (
+              <th key={col.key}>{col.label}</th>
+            ))}
+            {actions && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
-          {currentStudents.map((s) => (
-            <tr
-                key={s.name}
-                className={highlightedStudent === s.name ? "highlight-row" : ""}
-            >
-              <td className="name-cell">{s.name}</td>
-              <td>
-                {editingName === s.name ? (
-                  <input
-                    ref={inputRef}
-                    type="number"
-                    step="0.01"
-                    className="grade-edit"
-                    value={editGrade}
-                    onChange={handleGradeChange}
-                    onKeyDown={(e) => handleGradeSubmit(e, s.name)}
-                    onBlur={() => setEditingName(null)}
-                  />
-                ) : (
-                  <span
-                    className="grade-cell"
-                    onClick={() => handleGradeClick(s.name, s.grade)}
-                  >
-                    <span className={`grade-letter grade-${getLetterGrade(s.grade)}`}>
-                        {getLetterGrade(s.grade)}
-                    </span>
-                    <span className="grade-percent">{s.grade}%</span>
-                  </span>
-                )}
-              </td>
-              <td>
-                <button className="delete-btn" onClick={() => {
-                    if (window.confirm(`Are you sure you want to delete ${s.name}?`)) {
-                        {onDelete(s.name)}
-                    }
-                }}>
-                  Delete
-                </button>
-              </td>
+          {currentData.map((row, i) => (
+            <tr key={i}>
+              {columns.map((col) => (
+                <td key={col.key}>
+                  {row[col.key]}
+                </td>
+              ))}
+        
+              {actions && (
+                <td>
+                  {actions(row)}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
