@@ -31,23 +31,6 @@ export default function PaginatedTable({
     }
     }, [editingName]);
 
-  const handleGradeClick = (name, grade) => {
-    setEditingName(name);
-    setEditGrade(grade);
-  };
-
-  const handleGradeChange = (e) => setEditGrade(e.target.value);
-
-  const handleGradeSubmit = (e, name) => {
-    if (e.key === "Enter") {
-      const parsed = parseFloat(editGrade);
-      if (!isNaN(parsed)) {
-        onEdit(name, parsed);
-      }
-      setEditingName(null);
-    }
-  };
-
   return (
     <div className="table-container">
       <table className="student-table">
@@ -67,7 +50,7 @@ export default function PaginatedTable({
                   {row[col.key]}
                 </td>
               ))}
-        
+
               {actions && (
                 <td>
                   {actions(row)}

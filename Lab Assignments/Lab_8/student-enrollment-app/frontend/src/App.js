@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { fetchCourses } from "./api/gradesAPI";
+import { fetchCourses, fetchMyCourses } from "./api/gradesAPI";
 import PaginatedTable from "./components/PaginatedTable";
-import StudentForm from "./components/StudentForm";
 import StudentSearch from "./components/StudentSearch";
+import Tabs from "./components/Tabs";
 import "./App.css";
 
 
@@ -11,10 +11,16 @@ function App() {
   const [searchText, setSearchText] = useState("");
   const [message, setMessage] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+  const [tab, setTab] = useState("courses");
+  const [myCourses, setMyCourses] = useState([]);
 
   useEffect(() => {
     loadCourses();
   }, []);
+
+  useEffect(() => {
+    if (tab === "my") loadMyCourses();
+  }, [tab]);
 
   const loadCourses = async () => {
   try {
@@ -27,10 +33,26 @@ function App() {
   }
   };
 
+  const loadMyCourses = async () => {
+    const data = await fetchMyCourses(1);
+    setMyCourses(data);
+  };
+
   // Filter students based on search (first letter of first or last name)
   const filteredCourses = courses.filter((c) => {
     const search = searchText.toLowerCase();
-    return c.name.toLowerCase().startsWith(search);
+
+    return Object.values(c).some((val) =>
+      String(val).toLowerCase().includes(search)
+    );
+  });
+
+  const filteredMyCourses = myCourses.filter((c) => {
+    const search = searchText.toLowerCase();
+
+    return Object.values(c).some((val) =>
+      String(val).toLowerCase().includes(search)
+    );
   });
 
   const showTempMessage = (text, duration = 3000) => {
@@ -48,6 +70,17 @@ function App() {
         <h1>Student Enrollment System</h1>
       </div>
 
+      <div className="content-container">
+
+      <Tabs
+        activeTab={tab}
+        onChange={setTab}
+        tabs={[
+          { key: "courses", label: "All Courses" },
+          { key: "my", label: "My Classes" }
+        ]}
+      />
+
       <div className="search-container">
         <StudentSearch
           searchText={searchText}
@@ -55,23 +88,37 @@ function App() {
         />
       </div>
 
+      </div>
+
       <div className="message-container">
         {message && <span className={`message ${showMessage ? "visible" : ""}`}>{message}</span>}
       </div>
 
       <div className="main-content">
-        <PaginatedTable
-          data={courses}
-          columns={[
-            { key: "name", label: "Course" },
-            { key: "capacity", label: "Capacity" }
-          ]}
-          actions={(row) => (
-            <button onClick={() => {}}>
-              Enroll
-            </button>
-          )}
-        />
+        {tab === "courses" && (
+          <PaginatedTable
+            data={filteredCourses}
+            columns={[
+              { key: "name", label: "Course" },
+              { key: "capacity", label: "Capacity" }
+            ]}
+            actions={(row) => (
+              <button onClick={() => {}}>
+                Enroll
+              </button>
+            )}
+          />
+        )}
+
+        {tab === "my" && (
+          <PaginatedTable
+            data={filteredMyCourses}
+            columns={[
+              { key: "course_id", label: "Course ID" },
+              { key: "grade", label: "Grade" }
+            ]}
+          />
+        )}
 
       </div>
     </div>
