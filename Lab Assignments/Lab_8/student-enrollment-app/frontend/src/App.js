@@ -3,6 +3,7 @@ import { fetchCourses, fetchMyCourses } from "./api/gradesAPI";
 import PaginatedTable from "./components/PaginatedTable";
 import StudentSearch from "./components/StudentSearch";
 import Tabs from "./components/Tabs";
+import { enroll, dropCourse } from "./api/gradesAPI";
 import "./App.css";
 
 
@@ -55,6 +56,39 @@ function App() {
     );
   });
 
+  const handleDrop = async (courseId) => {
+    try {
+      const res = await dropCourse(courseId, 1);
+    
+      if (res.error) throw new Error(res.error);
+    
+      showTempMessage("Course dropped");
+    
+      loadMyCourses();
+      loadCourses();
+    
+    } catch (err) {
+      showTempMessage(err.message);
+    }
+  };
+
+  const handleEnroll = async (courseId) => {
+  try {
+    const res = await enroll(courseId, 1);
+
+    if (res.error) throw new Error(res.error);
+
+    showTempMessage("Enrolled successfully!");
+
+    // refresh both views
+    loadCourses();
+    if (tab === "my") loadMyCourses();
+
+  } catch (err) {
+    showTempMessage(err.message);
+  }
+  };
+
   const showTempMessage = (text, duration = 3000) => {
     setMessage(text);
     setShowMessage(true);
@@ -100,10 +134,13 @@ function App() {
             data={filteredCourses}
             columns={[
               { key: "name", label: "Course" },
+              { key: "instructor", label: "Instructor" },
+              { key: "time", label: "Time" },
+              { key: "enrolled", label: "Enrolled" },
               { key: "capacity", label: "Capacity" }
             ]}
             actions={(row) => (
-              <button onClick={() => {}}>
+              <button onClick={() => handleEnroll(row.id)}>
                 Enroll
               </button>
             )}
@@ -114,9 +151,20 @@ function App() {
           <PaginatedTable
             data={filteredMyCourses}
             columns={[
-              { key: "course_id", label: "Course ID" },
-              { key: "grade", label: "Grade" }
+              { key: "name", label: "Course" },
+              { key: "instructor", label: "Instructor" },
+              { key: "time", label: "Time" },
+              { key: "grade", label: "Grade" },
+              { key: "enrolled", label: "Enrolled" },
+              { key: "capacity", label: "Capacity" }
             ]}
+            actions={(row) => (
+              <button
+                onClick={() => handleDrop(row.course_id)}
+              >
+                Drop
+              </button>
+            )}
           />
         )}
 

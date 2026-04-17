@@ -61,11 +61,14 @@ export default function PaginatedTable({
         </tbody>
       </table>
 
+      <div className="controls-wrapper">
+
       <PageControls
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
+      </div>
     </div>
   );
 }

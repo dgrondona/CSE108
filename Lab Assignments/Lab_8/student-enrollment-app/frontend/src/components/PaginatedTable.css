@@ -1,5 +1,5 @@
 .table-container {
-  max-width: 650px;
+  max-width: 1000px;
   overflow-x: auto;
   margin-right: 20px; /* spacing if form is next to table */
   height: auto;
@@ -85,4 +85,12 @@ input.grade-edit[type="number"] {
 @keyframes highlightFade {
   0% { background-color: var(--color-primary); }
   100% { background-color: inherti; }
+}
+
+.controls-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
