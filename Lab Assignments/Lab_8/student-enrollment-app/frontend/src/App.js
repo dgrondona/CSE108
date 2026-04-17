@@ -378,20 +378,30 @@ console.log("roster", roster);
 
   return (
     <div className="app">
-      <div className="logo">
-        <h1>Student Enrollment System</h1>
-      </div>
 
-      {user && (
+      <div className="top-bar">
+        <span className="greeting">
+          Hi, {user.username}
+        </span>
+        
         <button
-          onClick={() => {
+          onClick={async () => {
+            await fetch("http://127.0.0.1:5000/api/logout", {
+              method: "POST",
+              credentials: "include"
+            });
+          
             setUser(null);
             localStorage.removeItem("user");
           }}
         >
           Logout
         </button>
-      )}
+      </div>
+
+      <div className="logo">
+        <h1>Student Enrollment System</h1>
+      </div>
 
       {user.role === "teacher" && <TeacherDashboard />}
 

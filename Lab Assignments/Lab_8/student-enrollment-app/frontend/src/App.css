@@ -217,3 +217,27 @@ input:focus {
     transform: rotate(360deg);
   }
 }
+
+.top-bar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.greeting {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.top-bar button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-primary);
+  background: var(--color-delete);
+  cursor: pointer;
+}
