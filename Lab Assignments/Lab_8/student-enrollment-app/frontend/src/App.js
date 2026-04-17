@@ -22,6 +22,8 @@ function App() {
   const [gradeValue, setGradeValue] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   const loadTeacherCourses = async () => {
     const res = await fetch(`http://127.0.0.1:5000/api/teacher/${user.id}/courses`);
@@ -33,7 +35,9 @@ function App() {
     const res = await fetch(`http://127.0.0.1:5000/api/course/${courseId}/students`);
     const data = await res.json();
     setRoster(data);
-    setSelectedCourse(courseId);
+    
+    const course = teacherCourses.find(c => c.id === courseId);
+    setSelectedCourse(course || null);
   };
 
   const updateGrade = async (studentId, newGrade) => {
@@ -84,7 +88,7 @@ function App() {
         {selectedCourse && (
           <div className="roster-section">
           
-            <h3>Class Roster</h3>
+            <h3>{selectedCourse?.name} Roster</h3>
 
             <PaginatedTable
               data={roster}
@@ -133,21 +137,57 @@ function App() {
     );
   };
 
-  const login = async (username, password) => {
-    const res = await fetch("http://127.0.0.1:5000/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+  useEffect(() => {
+    const checkUser = async () => {
+      const res = await fetch("http://127.0.0.1:5000/api/me", {
+        credentials: "include"
+      });
+    
+      if (!res.ok) {
+        setUser(null);
+        return;
+      }
+    
+      const data = await res.json();
+      setUser(data);
+    };
+  
+    checkUser();
+  }, []);
+
+  const logout = async () => {
+    await fetch("http://127.0.0.1:5000/api/logout", {
+      credentials: "include"
     });
 
-    const data = await res.json();
+    setUser(null);
+    localStorage.removeItem("user");
+  };
 
-    if (data.error) {
-      showTempMessage(data.error);
-      return;
+  const login = async (username, password) => {
+    setLoginLoading(true);
+    setLoginError("");
+
+    try {
+      const res = await fetch("http://127.0.0.1:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoginError(data.error || "Login failed");
+        return;
+      }
+
+      setUser(data);
+      localStorage.setItem("user", JSON.stringify(data));
+    } finally {
+      setLoginLoading(false);
     }
-
-    setUser(data);
   };
 
   useEffect(() => {
@@ -199,35 +239,52 @@ function App() {
 
   const handleDrop = async (courseId) => {
     try {
-      const res = await dropCourse(courseId, 1);
-    
-      if (res.error) throw new Error(res.error);
-    
-      showTempMessage("Course dropped");
-    
+      const res = await fetch("http://127.0.0.1:5000/api/drop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          course_id: courseId,
+          student_id: user.id
+        })
+      }); 
+
+      const data = await res.json();  
+
+      if (!res.ok) throw new Error(data.error || "Drop failed");  
+
+      showTempMessage("Course dropped");  
+
       loadMyCourses();
-      loadCourses();
-    
+      loadCourses();  
+
     } catch (err) {
       showTempMessage(err.message);
     }
   };
 
   const handleEnroll = async (courseId) => {
-  try {
-    const res = await enroll(courseId, 1);
-
-    if (res.error) throw new Error(res.error);
-
-    showTempMessage("Enrolled successfully!");
-
-    // refresh both views
-    loadCourses();
-    if (tab === "my") loadMyCourses();
-
-  } catch (err) {
-    showTempMessage(err.message);
-  }
+    try {
+      const res = await fetch("http://127.0.0.1:5000/api/enroll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          course_id: courseId,
+          student_id: user.id   // ✅ FIXED
+        })
+      });
+    
+      const data = await res.json();
+    
+      if (!res.ok) throw new Error(data.error || "Enroll failed");
+    
+      showTempMessage("Enrolled successfully!");
+    
+      loadCourses();
+      if (tab === "my") loadMyCourses();
+    
+    } catch (err) {
+      showTempMessage(err.message);
+    }
   };
 
   const showTempMessage = (text, duration = 3000) => {
@@ -241,27 +298,54 @@ function App() {
 
   if (!user) {
     return (
-      <div className="login">
+      <div className="login-container">
+        <div className="login-card">
+          <h2>Log In</h2>
 
-        <h2>Login</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              login(username, password);
+            }}
+          >
+            <div className="login-field">
+              <input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                autoComplete="username"
+              />
+            </div>
 
-        <input
-          placeholder="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+            <div className="login-field">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                autoComplete="current-password"
+              />
+            </div>
 
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+            {loginError && (
+              <div className="login-error">
+                {loginError}
+              </div>
+            )}
 
-        <button onClick={() => login(username, password)}>
-          Login
-        </button>
-
+            <button
+              type="submit"
+              className="login-button"
+              disabled={loginLoading}
+            >
+              {loginLoading ? (
+                <span className="spinner"></span>
+              ) : (
+                "Login"
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
@@ -271,6 +355,17 @@ function App() {
       <div className="logo">
         <h1>Student Enrollment System</h1>
       </div>
+
+      {user && (
+        <button
+          onClick={() => {
+            setUser(null);
+            localStorage.removeItem("user");
+          }}
+        >
+          Logout
+        </button>
+      )}
 
       {user.role === "teacher" && <TeacherDashboard />}
 

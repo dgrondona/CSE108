@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from models import db, Course, Student, Enrollment, User
+from flask_login import login_user, logout_user, login_required, current_user
 
 api = Blueprint("api", __name__)
 
@@ -102,7 +103,6 @@ def drop_course():
 @api.route("/login", methods=["POST"])
 def login():
     data = request.json
-
     username = data["username"]
     password = data["password"]
 
@@ -111,11 +111,27 @@ def login():
     if not user:
         return jsonify({"error": "Invalid credentials"}), 401
 
+    login_user(user)
+
     return jsonify({
-        "id": user.student_id if user.role == "student" else user.teacher_id,
+        "id": user.id,
         "role": user.role,
         "username": user.username
     })
+
+@api.route("/me")
+@login_required
+def me():
+    return jsonify({
+        "id": current_user.id,
+        "role": current_user.role,
+        "username": current_user.username
+    })
+
+@api.route("/logout")
+def logout():
+    logout_user()
+    return jsonify({"message": "logged out"})
 
 @api.route("/teacher/<int:teacher_id>/courses")
 def teacher_courses(teacher_id):

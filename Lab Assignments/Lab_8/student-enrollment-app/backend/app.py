@@ -1,15 +1,28 @@
 from flask import Flask
 from flask_cors import CORS
-from models import db, Course, Enrollment, Student
+from models import db, Course, Enrollment, Student, User
 from config import Config
-from models import User
 from admin import setup_admin
+from flask import Flask, session
+from flask_login import LoginManager
+
+login_manager = LoginManager()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    app.config["SECRET_KEY"] = "dev-secret-key-change-later"
+    CORS(app, supports_credentials=True)
+
     CORS(app)
+
+    login_manager.init_app(app)
+    app.secret_key = "dev-secret-key"
 
     db.init_app(app)
 
@@ -24,77 +37,129 @@ def create_app():
 
     return app
 
-import random
 
 def seed_data():
-    from models import Course, Student, Enrollment
+    from models import User, Course, Student, Enrollment
 
-    if Course.query.first():
+    # -------------------------
+    # RESET GUARD (SAFE)
+    # -------------------------
+    if User.query.first() or Course.query.first():
         return
 
-    # -------------------
-    # TEACHERS (just IDs in Course)
-    # -------------------
-    teacher_ids = [1, 2, 3, 4, 5]
+    # -------------------------
+    # TEACHERS
+    # -------------------------
+    teacher_users = [
+        ("jsmith", "Smith"),
+        ("adoe", "Doe"),
+        ("bwayne", "Wayne"),
+        ("ckent", "Kent"),
+        ("dprince", "Prince"),
+    ]
 
-    # -------------------
-    # COURSES (10 total)
-    # -------------------
-    courses = []
-    for i in range(10):
-        c = Course(
-            name=f"Course {i+1}",
-            instructor=f"Prof {i+1}",
-            capacity=25,
-            time=f"MWF {8+i}:00",
-            teacher_id=random.choice(teacher_ids)
+    teachers = []
+    teacher_map = {}
+
+    for i, (username, name) in enumerate(teacher_users, start=1):
+        user = User(
+            username=username,
+            password="1234",
+            role="teacher",
+            teacher_id=i
         )
-        courses.append(c)
+        teachers.append(user)
+        teacher_map[name] = i
 
-    # -------------------
-    # STUDENTS (50 total)
-    # -------------------
+    # -------------------------
+    # COURSES (DETEMINISTIC STRUCTURE)
+    # -------------------------
+    course_templates = [
+        ("Math 101", "Smith", 3, "MWF 9:00"),
+        ("Math 201", "Smith", 5, "MWF 10:00"),
+
+        ("CS 108", "Doe", 4, "TTh 1:00"),
+        ("CS 220", "Doe", 2, "TTh 2:00"),
+
+        ("Physics 1", "Wayne", 6, "MWF 11:00"),
+        ("Physics 2", "Wayne", 2, "MWF 12:00"),
+
+        ("Philosophy", "Kent", 5, "TTh 9:00"),
+        ("Ethics", "Kent", 3, "TTh 10:00"),
+
+        ("History", "Prince", 4, "MWF 2:00"),
+        ("Politics", "Prince", 2, "MWF 3:00"),
+    ]
+
+    courses = []
+    for name, prof, cap, time in course_templates:
+        courses.append(
+            Course(
+                name=name,
+                instructor=prof,
+                capacity=cap,
+                time=time,
+                teacher_id=teacher_map[prof]
+            )
+        )
+
+    # -------------------------
+    # STUDENTS (DETERMINISTIC LIST)
+    # -------------------------
+    student_names = [
+        "jsmith_s", "adoe_s", "bjones", "ckim", "dlee",
+        "emartin", "fgarcia", "hpatel", "ijohnson", "knguyen",
+        "lliu", "mmurphy", "ncooper", "operez", "rwhite"
+    ]
+
+    student_users = []
     students = []
-    for i in range(50):
-        s = Student(name=f"Student {i+1}")
-        students.append(s)
 
-    db.session.add_all(courses + students)
+    for i, name in enumerate(student_names, start=1):
+        student_users.append(
+            User(
+                username=name,
+                password="1234",
+                role="student",
+                student_id=i
+            )
+        )
+        students.append(Student(name=name))
+
+    # -------------------------
+    # COMMIT BASE DATA
+    # -------------------------
+    db.session.add_all(teachers)
+    db.session.add_all(courses)
+    db.session.add_all(student_users)
+    db.session.add_all(students)
     db.session.commit()
 
-    # -------------------
-    # ENROLLMENTS (4 courses per student avg)
-    # -------------------
+    # -------------------------
+    # ENROLLMENTS (CONTROLLED FILLING)
+    # -------------------------
     all_courses = Course.query.all()
+    all_students = Student.query.all()
 
-    enrollments = []
+    # deterministic distribution:
+    # first few courses = full, others partial
+    for i, course in enumerate(all_courses):
+        if i % 2 == 0:
+            target = course.capacity  # full
+        else:
+            target = max(1, course.capacity - 1)  # nearly full
 
-    for s in students:
-        chosen_courses = random.sample(all_courses, 4)
+        chosen = all_students[:target]  # deterministic slice
 
-        for c in chosen_courses:
-            enrollments.append(
+        for s in chosen:
+            db.session.add(
                 Enrollment(
                     student_id=s.id,
-                    course_id=c.id,
-                    grade=random.randint(60, 100)
+                    course_id=course.id,
+                    grade=75 + (s.id % 25)
                 )
             )
 
-    db.session.add_all(enrollments)
-    db.session.commit()
-
-    users = [
-        User(username="student1", password="pass", role="student", student_id=1),
-        User(username="student2", password="pass", role="student", student_id=2),
-
-        User(username="teacher1", password="pass", role="teacher", teacher_id=1),
-        User(username="teacher2", password="pass", role="teacher", teacher_id=2),
-
-        User(username="admin", password="pass", role="admin"),
-    ]
-
-    db.session.add_all(users)
     db.session.commit()
 
 

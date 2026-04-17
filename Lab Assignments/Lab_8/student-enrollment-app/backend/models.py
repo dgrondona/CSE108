@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
@@ -24,12 +25,11 @@ class Enrollment(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
     grade = db.Column(db.Float, default=0)
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # student / teacher / admin
+    role = db.Column(db.String(20))  # student / teacher / admin
 
-    # link to actual entity
     student_id = db.Column(db.Integer, nullable=True)
     teacher_id = db.Column(db.Integer, nullable=True)
