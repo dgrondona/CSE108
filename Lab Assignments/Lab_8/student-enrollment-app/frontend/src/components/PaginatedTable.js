@@ -6,7 +6,8 @@ export default function PaginatedTable({
   data,
   columns,
   studentsPerPage = 50,
-  actions = null
+  actions = null,
+  renderCell
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [editingName, setEditingName] = useState(null);
@@ -47,7 +48,10 @@ export default function PaginatedTable({
             <tr key={i}>
               {columns.map((col) => (
                 <td key={col.key}>
-                  {row[col.key]}
+                  {renderCell
+                    ? renderCell(row, col)
+                    : row[col.key]
+                  }
                 </td>
               ))}
 

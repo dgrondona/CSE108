@@ -14,10 +14,151 @@ function App() {
   const [showMessage, setShowMessage] = useState(false);
   const [tab, setTab] = useState("courses");
   const [myCourses, setMyCourses] = useState([]);
+  const [user, setUser] = useState(null);
+  const [teacherCourses, setTeacherCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [roster, setRoster] = useState([]);
+  const [editing, setEditing] = useState(null);
+  const [gradeValue, setGradeValue] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const loadTeacherCourses = async () => {
+    const res = await fetch(`http://127.0.0.1:5000/api/teacher/${user.id}/courses`);
+    const data = await res.json();
+    setTeacherCourses(data);
+  };
+
+  const loadRoster = async (courseId) => {
+    const res = await fetch(`http://127.0.0.1:5000/api/course/${courseId}/students`);
+    const data = await res.json();
+    setRoster(data);
+    setSelectedCourse(courseId);
+  };
+
+  const updateGrade = async (studentId, newGrade) => {
+    const res = await fetch("http://127.0.0.1:5000/api/grade", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        student_id: studentId,
+        course_id: selectedCourse,
+        grade: newGrade
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    // refresh roster
+    loadRoster(selectedCourse);
+  };
+
+  const TeacherDashboard = () => {
+    return (
+      <div className="teacher-dashboard">
+
+        <h2>My Courses</h2>
+
+        {/* COURSE LIST */}
+        <PaginatedTable
+          data={teacherCourses}
+          columns={[
+            { key: "name", label: "Course" },
+            { key: "time", label: "Time" },
+            { key: "enrolled", label: "Enrolled" },
+            { key: "capacity", label: "Capacity" }
+          ]}
+          actions={(row) => (
+            <button onClick={() => loadRoster(row.id)}>
+              View Students
+            </button>
+          )}
+        />
+
+        {/* ROSTER */}
+        {selectedCourse && (
+          <div className="roster-section">
+          
+            <h3>Class Roster</h3>
+
+            <PaginatedTable
+              data={roster}
+              columns={[
+                { key: "name", label: "Student" },
+                { key: "grade", label: "Grade" }
+              ]}
+              renderCell={(row, col) => {
+                if (col.key === "grade") {
+                  const isEditing = editing === row.student_id;
+                
+                  return isEditing ? (
+                    <input
+                      type="number"
+                      value={gradeValue}
+                      onChange={(e) => setGradeValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          updateGrade(row.student_id, gradeValue);
+                          setEditing(null);
+                        }
+                      }}
+                      autoFocus
+                    />
+                  ) : (
+                    <span
+                      onClick={() => {
+                        setEditing(row.student_id);
+                        setGradeValue(row.grade);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {row.grade}
+                    </span>
+                  );
+                }
+              
+                return row[col.key];
+              }}
+            />
+
+          </div>
+        )}
+
+      </div>
+    );
+  };
+
+  const login = async (username, password) => {
+    const res = await fetch("http://127.0.0.1:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      showTempMessage(data.error);
+      return;
+    }
+
+    setUser(data);
+  };
 
   useEffect(() => {
     loadCourses();
   }, []);
+
+  useEffect(() => {
+    if (user?.role === "teacher") {
+      loadTeacherCourses();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (tab === "my") loadMyCourses();
@@ -35,7 +176,7 @@ function App() {
   };
 
   const loadMyCourses = async () => {
-    const data = await fetchMyCourses(1);
+    const data = await fetchMyCourses(user.id);
     setMyCourses(data);
   };
 
@@ -98,12 +239,43 @@ function App() {
     }, duration);
   };
 
+  if (!user) {
+    return (
+      <div className="login">
+
+        <h2>Login</h2>
+
+        <input
+          placeholder="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button onClick={() => login(username, password)}>
+          Login
+        </button>
+
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <div className="logo">
         <h1>Student Enrollment System</h1>
       </div>
 
+      {user.role === "teacher" && <TeacherDashboard />}
+
+      {user.role === "student" && (
+      <>
       <div className="content-container">
 
       <Tabs
@@ -169,6 +341,8 @@ function App() {
         )}
 
       </div>
+      </>
+      )}
     </div>
   );
 }

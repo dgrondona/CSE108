@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Course, Student, Enrollment
+from models import db, Course, Student, Enrollment, User
 
 api = Blueprint("api", __name__)
 
@@ -98,3 +98,81 @@ def drop_course():
     db.session.commit()
 
     return jsonify({"message": "dropped"})
+
+@api.route("/login", methods=["POST"])
+def login():
+    data = request.json
+
+    username = data["username"]
+    password = data["password"]
+
+    user = User.query.filter_by(username=username, password=password).first()
+
+    if not user:
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    return jsonify({
+        "id": user.student_id if user.role == "student" else user.teacher_id,
+        "role": user.role,
+        "username": user.username
+    })
+
+@api.route("/teacher/<int:teacher_id>/courses")
+def teacher_courses(teacher_id):
+    courses = Course.query.filter_by(teacher_id=teacher_id).all()
+
+    result = []
+
+    for c in courses:
+        enrolled_count = Enrollment.query.filter_by(course_id=c.id).count()
+
+        result.append({
+            "id": c.id,
+            "name": c.name,
+            "time": c.time,
+            "capacity": c.capacity,
+            "enrolled": enrolled_count
+        })
+
+    return jsonify(result)
+
+@api.route("/course/<int:course_id>/students")
+def course_students(course_id):
+    enrollments = Enrollment.query.filter_by(course_id=course_id).all()
+
+    result = []
+
+    for e in enrollments:
+        student = Student.query.get(e.student_id)
+
+        if not student:
+            continue
+
+        result.append({
+            "student_id": student.id,
+            "name": student.name,
+            "grade": e.grade
+        })
+
+    return jsonify(result)
+
+@api.route("/grade", methods=["POST"])
+def update_grade():
+    data = request.json
+
+    student_id = data["student_id"]
+    course_id = data["course_id"]
+    grade = data["grade"]
+
+    enrollment = Enrollment.query.filter_by(
+        student_id=student_id,
+        course_id=course_id
+    ).first()
+
+    if not enrollment:
+        return jsonify({"error": "Enrollment not found"}), 404
+
+    enrollment.grade = grade
+    db.session.commit()
+
+    return jsonify({"message": "grade updated"})

@@ -123,3 +123,20 @@ input:focus {
   margin: 0 auto;
   padding: 0 20px;
 }
+
+.teacher-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.teacher-dashboard table {
+  margin: 0 auto;
+}
+
+.course-section,
+.roster-section {
+  width: 90%;
+  max-width: 1000px;
+}
