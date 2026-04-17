@@ -241,3 +241,7 @@ input:focus {
   background: var(--color-delete);
   cursor: pointer;
 }
+
+.drop-button button {
+  background: var(--color-delete);
+}

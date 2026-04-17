@@ -383,7 +383,7 @@ console.log("roster", roster);
         <span className="greeting">
           Hi, {user.username}
         </span>
-        
+
         <button
           onClick={async () => {
             await fetch("http://127.0.0.1:5000/api/logout", {
@@ -462,11 +462,13 @@ console.log("roster", roster);
               { key: "capacity", label: "Capacity" }
             ]}
             actions={(row) => (
+              <div className="drop-button">
               <button
                 onClick={() => handleDrop(row.course_id)}
               >
                 Drop
               </button>
+              </div>
             )}
           />
         )}
