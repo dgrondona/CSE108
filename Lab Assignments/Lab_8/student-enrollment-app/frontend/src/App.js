@@ -25,14 +25,24 @@ function App() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
 
+  console.log("courses", courses);
+console.log("myCourses", myCourses);
+console.log("teacherCourses", teacherCourses);
+console.log("roster", roster);
+
   const loadTeacherCourses = async () => {
-    const res = await fetch(`http://127.0.0.1:5000/api/teacher/${user.id}/courses`);
-    const data = await res.json();
-    setTeacherCourses(data);
+    const res = await fetch(`http://127.0.0.1:5000/api/teacher/courses`, {
+      credentials: "include"
+    });
+
+    const data = await res.json().catch(() => []);
+    setTeacherCourses(Array.isArray(data) ? data : []);
   };
 
   const loadRoster = async (courseId) => {
-    const res = await fetch(`http://127.0.0.1:5000/api/course/${courseId}/students`);
+    const res = await fetch(`http://127.0.0.1:5000/api/course/${courseId}/students`, {
+      credentials: "include"
+    });
     const data = await res.json();
     setRoster(data);
     
@@ -43,10 +53,11 @@ function App() {
   const updateGrade = async (studentId, newGrade) => {
     const res = await fetch("http://127.0.0.1:5000/api/grade", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         student_id: studentId,
-        course_id: selectedCourse,
+        course_id: selectedCourse.id,
         grade: newGrade
       })
     });
@@ -59,7 +70,7 @@ function App() {
     }
 
     // refresh roster
-    loadRoster(selectedCourse);
+    loadRoster(selectedCourse.id);
   };
 
   const TeacherDashboard = () => {
@@ -155,6 +166,7 @@ function App() {
     checkUser();
   }, []);
 
+
   const logout = async () => {
     await fetch("http://127.0.0.1:5000/api/logout", {
       credentials: "include"
@@ -201,8 +213,10 @@ function App() {
   }, [user]);
 
   useEffect(() => {
-    if (tab === "my") loadMyCourses();
-  }, [tab]);
+    if (user && tab === "my") {
+      loadMyCourses();
+    }
+  }, [user, tab]);
 
   const loadCourses = async () => {
   try {
@@ -216,7 +230,7 @@ function App() {
   };
 
   const loadMyCourses = async () => {
-    const data = await fetchMyCourses(user.id);
+    const data = await fetchMyCourses();
     setMyCourses(data);
   };
 
@@ -242,20 +256,26 @@ function App() {
       const res = await fetch("http://127.0.0.1:5000/api/drop", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          course_id: courseId,
-          student_id: user.id
+          course_id: courseId
         })
-      }); 
+      });
 
-      const data = await res.json();  
+      const text = await res.text();
+      let data = {};
 
-      if (!res.ok) throw new Error(data.error || "Drop failed");  
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error("Server returned invalid JSON");
+      }
 
-      showTempMessage("Course dropped");  
+      if (!res.ok) throw new Error(data.error || "Drop failed");
 
+      showTempMessage("Course dropped");
       loadMyCourses();
-      loadCourses();  
+      loadCourses();
 
     } catch (err) {
       showTempMessage(err.message);
@@ -267,21 +287,27 @@ function App() {
       const res = await fetch("http://127.0.0.1:5000/api/enroll", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          course_id: courseId,
-          student_id: user.id   // ✅ FIXED
+          course_id: courseId
         })
       });
-    
-      const data = await res.json();
-    
+
+      const text = await res.text();
+      let data = {};
+
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error("Server returned invalid JSON");
+      }
+
       if (!res.ok) throw new Error(data.error || "Enroll failed");
-    
+
       showTempMessage("Enrolled successfully!");
-    
       loadCourses();
       if (tab === "my") loadMyCourses();
-    
+
     } catch (err) {
       showTempMessage(err.message);
     }

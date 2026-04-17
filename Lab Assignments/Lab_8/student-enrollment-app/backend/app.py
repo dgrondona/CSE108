@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from models import db, Course, Enrollment, Student, User
 from config import Config
@@ -12,14 +12,16 @@ login_manager = LoginManager()
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    return jsonify({"error": "Unauthorized"}), 401
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
     app.config["SECRET_KEY"] = "dev-secret-key-change-later"
     CORS(app, supports_credentials=True)
-
-    CORS(app)
 
     login_manager.init_app(app)
     app.secret_key = "dev-secret-key"

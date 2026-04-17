@@ -27,9 +27,9 @@ class Enrollment(db.Model):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    role = db.Column(db.String(20))  # student / teacher / admin
+    username = db.Column(db.String(50))
+    password = db.Column(db.String(100))
+    role = db.Column(db.String(20))
 
-    student_id = db.Column(db.Integer, nullable=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("student.id"))
     teacher_id = db.Column(db.Integer, nullable=True)
